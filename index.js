@@ -50,7 +50,7 @@ export class Game {
       var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
       if (newSpace > 63) {
         finalSpace = 63 - (newSpace - 63);
-        bounceResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
+        bounceResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
       } else if (newSpace == 6) {
         finalSpace = 12;
         isBridge = true;
