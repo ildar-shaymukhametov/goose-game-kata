@@ -69,13 +69,17 @@ export class Game {
         }
       } else {
         finalSpace = newSpace;
-        defaultResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${finalSpace}`;
+        if (finalSpace == 63) {
+          defaultResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${finalSpace}. ${player} Wins!!`;
+        } else {
+          defaultResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${finalSpace}`;
+        }
       }
       this.players.find(x => x.name == player).space = finalSpace;
 
 
       if (newSpace == 63) {
-        return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${finalSpace}. ${player} Wins!!`;
+        return defaultResponse;
       } else if (newSpace > 63) {
         return bounceResponse;;
       }
