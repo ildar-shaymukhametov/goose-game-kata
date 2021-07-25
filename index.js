@@ -39,52 +39,52 @@ export class Game {
       }
       var currentSpace = this.players.find(x => x.name == player).space;
       const rollsSum = Number(roll1) + Number(roll2);
-      var totalSpace = this.players.find(x => x.name == player).space += rollsSum;
-      var newSpace = totalSpace;
+      var newSpace = this.players.find(x => x.name == player).space += rollsSum;
+      var finalSpace = newSpace;
       var isBridge = false;
       var isGoose = false;
       var gooseResponse;
-      if (newSpace > 63) {
-        newSpace = 63 - (newSpace - 63);
-      } else if (newSpace == 6) {
-        newSpace = 12;
+      if (finalSpace > 63) {
+        finalSpace = 63 - (finalSpace - 63);
+      } else if (finalSpace == 6) {
+        finalSpace = 12;
         isBridge = true;
-      } else if (this.gooseSpaces.includes(newSpace)) {
+      } else if (this.gooseSpaces.includes(finalSpace)) {
         isGoose = true;
         var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
-        gooseResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${totalSpace}, The Goose.`;
-        while (this.gooseSpaces.includes(newSpace)) {
-          newSpace += rollsSum;
-          if (this.gooseSpaces.includes(newSpace)) {
-            gooseResponse += ` ${player} moves again and goes to ${newSpace}, The Goose.`;
+        gooseResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${newSpace}, The Goose.`;
+        while (this.gooseSpaces.includes(finalSpace)) {
+          finalSpace += rollsSum;
+          if (this.gooseSpaces.includes(finalSpace)) {
+            gooseResponse += ` ${player} moves again and goes to ${finalSpace}, The Goose.`;
           } else {
-            gooseResponse += ` ${player} moves again and goes to ${newSpace}`;
+            gooseResponse += ` ${player} moves again and goes to ${finalSpace}`;
           }
         }
       }
-      this.players.find(x => x.name == player).space = newSpace;
+      this.players.find(x => x.name == player).space = finalSpace;
 
       if (currentSpace == 0) {
         if (isBridge) {
-          return `${player} rolls ${roll1}, ${roll2}. Foo moves from Start to The Bridge. ${player} jumps to ${newSpace}`;
+          return `${player} rolls ${roll1}, ${roll2}. Foo moves from Start to The Bridge. ${player} jumps to ${finalSpace}`;
         } else if (isGoose) {
           return gooseResponse;
         } else {
-          return `${player} rolls ${roll1}, ${roll2}. Foo moves from Start to ${newSpace}`;
+          return `${player} rolls ${roll1}, ${roll2}. Foo moves from Start to ${finalSpace}`;
         }
       }
 
-      if (totalSpace == 63) {
-        return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${newSpace}. ${player} Wins!!`;
-      } else if (totalSpace > 63) {
-        return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to 63. ${player} bounces! ${player} returns to ${newSpace}`;
+      if (newSpace == 63) {
+        return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${finalSpace}. ${player} Wins!!`;
+      } else if (newSpace > 63) {
+        return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
       } else {
         if (isBridge) {
-          return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to The Bridge. ${player} jumps to ${newSpace}`;
+          return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to The Bridge. ${player} jumps to ${finalSpace}`;
         } else if (isGoose) {
           return gooseResponse;
         } else {
-          return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${newSpace}`;
+          return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${finalSpace}`;
         }
       }
     }
