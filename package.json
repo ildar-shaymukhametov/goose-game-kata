@@ -1,0 +1,33 @@
+{
+  "name": "goose-game-kata",
+  "version": "1.0.0",
+  "description": "Goose game is a game where two or more players move pieces around a track by rolling a die. The aim of the game is to reach square number sixty-three before any of the other players and avoid obstacles. ([wikipedia](https://en.wikipedia.org/wiki/Game_of_the_Goose))",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
+  "babel": {
+    "plugins": [
+      "@babel/plugin-transform-modules-commonjs"
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ildar-shaymukhametov/goose-game-kata.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ildar-shaymukhametov/goose-game-kata/issues"
+  },
+  "homepage": "https://github.com/ildar-shaymukhametov/goose-game-kata#readme",
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "jest": "^26.0.1",
+    "@babel/plugin-transform-modules-commonjs": "^7.9.6"
+  }
+}
