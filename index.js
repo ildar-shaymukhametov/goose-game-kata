@@ -6,6 +6,28 @@ class DiceThrower {
   }
 }
 
+class DefaultResult {
+  constructor(player, rolls) {
+    this.player = player;
+    this.rolls = rolls;
+  }
+  result() {
+    var resultSpace = space(this.player, this.rolls);
+    return {
+      response: response(this.player, this.rolls, resultSpace),
+      space: resultSpace
+    }
+
+    function response(player, rolls, resultSpace) {
+      var startingSpace = player.space == 0 ? "Start" : player.space;
+      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${startingSpace} to ${resultSpace}`;
+    }
+    function space(player, rolls) {
+      return player.space + rolls[0] + rolls[1];
+    }
+  }
+}
+
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
@@ -37,9 +59,10 @@ export class Game {
         roll1 = args[2];
         roll2 = args[3];
       }
-      var currentSpace = this.players.find(x => x.name == player).space;
+      const currentPlayer = this.players.find(x => x.name == player);
+      var currentSpace = currentPlayer.space;
       const rollsSum = Number(roll1) + Number(roll2);
-      var newSpace = this.players.find(x => x.name == player).space += rollsSum;
+      var newSpace = currentPlayer.space + rollsSum;
       var finalSpace;
       var isBridge = false;
       var isGoose = false;
@@ -76,8 +99,9 @@ export class Game {
         finalSpace = newSpace;
         winResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${finalSpace}. ${player} Wins!!`;
       } else {
-        finalSpace = newSpace;
-        defaultResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${finalSpace}`;
+        var result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
+        finalSpace = result.space;
+        defaultResponse = result.response;
       }
       this.players.find(x => x.name == player).space = finalSpace;
 
