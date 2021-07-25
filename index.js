@@ -43,12 +43,14 @@ export class Game {
       var finalSpace;
       var isBridge = false;
       var isGoose = false;
+      var isBounce = false;
       var gooseResponse;
       var bridgeResponse;
       var defaultResponse;
       var bounceResponse;
       var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
       if (newSpace > 63) {
+        isBounce = true;
         finalSpace = 63 - (newSpace - 63);
         bounceResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
       } else if (newSpace == 6) {
@@ -78,13 +80,9 @@ export class Game {
       this.players.find(x => x.name == player).space = finalSpace;
 
 
-      if (newSpace == 63) {
-        return defaultResponse;
-      } else if (newSpace > 63) {
+      if (isBounce) {
         return bounceResponse;;
-      }
-
-      if (isBridge) {
+      } else if (isBridge) {
         return bridgeResponse;
       } else if (isGoose) {
         return gooseResponse;
