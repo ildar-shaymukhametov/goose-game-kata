@@ -40,20 +40,21 @@ export class Game {
       var currentSpace = this.players.find(x => x.name == player).space;
       const rollsSum = Number(roll1) + Number(roll2);
       var newSpace = this.players.find(x => x.name == player).space += rollsSum;
-      var finalSpace = newSpace;
+      var finalSpace;
       var isBridge = false;
       var isGoose = false;
       var gooseResponse;
       var bridgeResponse;
       var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
-      if (finalSpace > 63) {
-        finalSpace = 63 - (finalSpace - 63);
-      } else if (finalSpace == 6) {
+      if (newSpace > 63) {
+        finalSpace = 63 - (newSpace - 63);
+      } else if (newSpace == 6) {
         finalSpace = 12;
         isBridge = true;
         bridgeResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to The Bridge. ${player} jumps to ${finalSpace}`;
-      } else if (this.gooseSpaces.includes(finalSpace)) {
+      } else if (this.gooseSpaces.includes(newSpace)) {
         isGoose = true;
+        finalSpace = newSpace;
         gooseResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${newSpace}, The Goose.`;
         while (this.gooseSpaces.includes(finalSpace)) {
           finalSpace += rollsSum;
@@ -63,6 +64,8 @@ export class Game {
             gooseResponse += ` ${player} moves again and goes to ${finalSpace}`;
           }
         }
+      } else {
+        finalSpace = newSpace;
       }
       this.players.find(x => x.name == player).space = finalSpace;
 
