@@ -44,11 +44,14 @@ export class Game {
       var isBridge = false;
       var isGoose = false;
       var gooseResponse;
+      var bridgeResponse;
       if (finalSpace > 63) {
         finalSpace = 63 - (finalSpace - 63);
       } else if (finalSpace == 6) {
         finalSpace = 12;
         isBridge = true;
+        var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
+        bridgeResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to The Bridge. ${player} jumps to ${finalSpace}`;
       } else if (this.gooseSpaces.includes(finalSpace)) {
         isGoose = true;
         var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
@@ -66,7 +69,7 @@ export class Game {
 
       if (currentSpace == 0) {
         if (isBridge) {
-          return `${player} rolls ${roll1}, ${roll2}. Foo moves from Start to The Bridge. ${player} jumps to ${finalSpace}`;
+          return bridgeResponse;
         } else if (isGoose) {
           return gooseResponse;
         } else {
@@ -80,7 +83,7 @@ export class Game {
         return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
       } else {
         if (isBridge) {
-          return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to The Bridge. ${player} jumps to ${finalSpace}`;
+          return bridgeResponse;
         } else if (isGoose) {
           return gooseResponse;
         } else {
