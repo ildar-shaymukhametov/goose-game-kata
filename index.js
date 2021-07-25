@@ -45,16 +45,15 @@ export class Game {
       var isGoose = false;
       var gooseResponse;
       var bridgeResponse;
+      var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
       if (finalSpace > 63) {
         finalSpace = 63 - (finalSpace - 63);
       } else if (finalSpace == 6) {
         finalSpace = 12;
         isBridge = true;
-        var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
         bridgeResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to The Bridge. ${player} jumps to ${finalSpace}`;
       } else if (this.gooseSpaces.includes(finalSpace)) {
         isGoose = true;
-        var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
         gooseResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${newSpace}, The Goose.`;
         while (this.gooseSpaces.includes(finalSpace)) {
           finalSpace += rollsSum;
