@@ -103,8 +103,8 @@ export class Game {
         finalSpace = result.space;
         defaultResponse = result.response;
       }
-      this.players.find(x => x.name == player).space = finalSpace;
 
+      currentPlayer.space = finalSpace;
 
       if (isBounce) {
         return bounceResponse;;
