@@ -74,7 +74,7 @@ export class Game {
       } else if (newSpace == 63) {
         isWin = true;
         finalSpace = newSpace;
-        winResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${finalSpace}. ${player} Wins!!`;
+        winResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${finalSpace}. ${player} Wins!!`;
       } else {
         finalSpace = newSpace;
         defaultResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${finalSpace}`;
