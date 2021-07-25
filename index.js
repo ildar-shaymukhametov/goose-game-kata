@@ -71,28 +71,19 @@ export class Game {
       }
       this.players.find(x => x.name == player).space = finalSpace;
 
-      if (currentSpace == 0) {
-        if (isBridge) {
-          return bridgeResponse;
-        } else if (isGoose) {
-          return gooseResponse;
-        } else {
-          return defaultResponse;
-        }
-      }
 
       if (newSpace == 63) {
         return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to ${finalSpace}. ${player} Wins!!`;
       } else if (newSpace > 63) {
         return `${player} rolls ${roll1}, ${roll2}. Foo moves from ${currentSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
+      }
+
+      if (isBridge) {
+        return bridgeResponse;
+      } else if (isGoose) {
+        return gooseResponse;
       } else {
-        if (isBridge) {
-          return bridgeResponse;
-        } else if (isGoose) {
-          return gooseResponse;
-        } else {
-          return defaultResponse;
-        }
+        return defaultResponse;
       }
     }
   }
