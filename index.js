@@ -49,6 +49,36 @@ class WinResult {
   }
 }
 
+class GooseResult {
+  constructor(player, rolls, nextSpace, gooseSpaces) {
+    this.player = player;
+    this.rolls = rolls;
+    this.nextSpace = nextSpace;
+    this.gooseSpaces = gooseSpaces;
+  }
+  result() {
+    if (this.gooseSpaces.includes(this.nextSpace)) {
+      var resultSpace = this.nextSpace;
+      var currentSpace = this.player.space == 0 ? "Start" : this.player.space;
+      var response = `${this.player.name} rolls ${this.rolls[0]}, ${this.rolls[1]}. Foo moves from ${currentSpace} to ${this.nextSpace}, The Goose.`;
+
+      while (this.gooseSpaces.includes(resultSpace)) {
+        resultSpace += this.rolls[0] + this.rolls[1];
+        if (this.gooseSpaces.includes(resultSpace)) {
+          response += ` ${this.player.name} moves again and goes to ${resultSpace}, The Goose.`;
+        } else {
+          response += ` ${this.player.name} moves again and goes to ${resultSpace}`;
+        }
+      }
+
+      return {
+        response,
+        space: resultSpace
+      }
+    }
+  }
+}
+
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
@@ -105,16 +135,9 @@ export class Game {
         bridgeResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to The Bridge. ${player} jumps to ${finalSpace}`;
       } else if (this.gooseSpaces.includes(newSpace)) {
         isGoose = true;
-        finalSpace = newSpace;
-        gooseResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${newSpace}, The Goose.`;
-        while (this.gooseSpaces.includes(finalSpace)) {
-          finalSpace += rollsSum;
-          if (this.gooseSpaces.includes(finalSpace)) {
-            gooseResponse += ` ${player} moves again and goes to ${finalSpace}, The Goose.`;
-          } else {
-            gooseResponse += ` ${player} moves again and goes to ${finalSpace}`;
-          }
-        }
+        var result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
+        finalSpace = result.space;
+        gooseResponse = result.response;
       } else if (newSpace == 63) {
         isWin = true;
         var result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
