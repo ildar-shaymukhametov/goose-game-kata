@@ -102,6 +102,29 @@ class BridgeResult {
   }
 }
 
+class BounceResult {
+  constructor(player, rolls, nextSpace) {
+    this.player = player;
+    this.rolls = rolls;
+    this.nextSpace = nextSpace;
+  }
+  result() {
+    if (this.nextSpace > 63) {
+      var resultSpace = 63 - (this.nextSpace - 63);
+
+      return {
+        response: response(this.player, this.rolls, resultSpace),
+        space: resultSpace
+      }
+    }
+
+    function response(player, rolls, nextSpace) {
+      var currentSpace = player.space == 0 ? "Start" : player.space;
+      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to 63. ${player.name} bounces! ${player.name} returns to ${nextSpace}`;
+    }
+  }
+}
+
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
@@ -150,8 +173,9 @@ export class Game {
       var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
       if (newSpace > 63) {
         isBounce = true;
-        finalSpace = 63 - (newSpace - 63);
-        bounceResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
+        let result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        finalSpace = result.space;
+        bounceResponse = result.response;
       } else if (newSpace == 6) {
         isBridge = true;
         let result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
