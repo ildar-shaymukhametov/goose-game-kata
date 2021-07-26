@@ -79,6 +79,29 @@ class GooseResult {
   }
 }
 
+class BridgeResult {
+  constructor(player, rolls, nextSpace) {
+    this.player = player;
+    this.rolls = rolls;
+    this.nextSpace = nextSpace;
+  }
+  result() {
+    if (this.nextSpace == 6) {
+      var resultSpace = 12;
+
+      return {
+        response: response(this.player, this.rolls, resultSpace),
+        space: resultSpace
+      }
+    }
+
+    function response(player, rolls, nextSpace) {
+      var currentSpace = player.space == 0 ? "Start" : player.space;
+      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to The Bridge. ${player.name} jumps to ${nextSpace}`;
+    }
+  }
+}
+
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
@@ -130,9 +153,10 @@ export class Game {
         finalSpace = 63 - (newSpace - 63);
         bounceResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
       } else if (newSpace == 6) {
-        finalSpace = 12;
         isBridge = true;
-        bridgeResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to The Bridge. ${player} jumps to ${finalSpace}`;
+        var result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        finalSpace = result.space;
+        bridgeResponse = result.response;
       } else if (this.gooseSpaces.includes(newSpace)) {
         isGoose = true;
         var result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
