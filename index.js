@@ -28,6 +28,27 @@ class DefaultResult {
   }
 }
 
+class WinResult {
+  constructor(player, rolls, nextSpace) {
+    this.player = player;
+    this.rolls = rolls;
+    this.nextSpace = nextSpace;
+  }
+  result() {
+    if (this.nextSpace == 63) {
+      return {
+        response: response(this.player, this.rolls, this.nextSpace),
+        space: this.nextSpace
+      }
+    }
+
+    function response(player, rolls, nextSpace) {
+      var currentSpace = player.space == 0 ? "Start" : player.space;
+      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${nextSpace}. ${player.name} Wins!!`;
+    }
+  }
+}
+
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
@@ -96,8 +117,9 @@ export class Game {
         }
       } else if (newSpace == 63) {
         isWin = true;
-        finalSpace = newSpace;
-        winResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to ${finalSpace}. ${player} Wins!!`;
+        var result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        finalSpace = result.space;
+        winResponse = result.response;
       } else {
         var result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
         finalSpace = result.space;
