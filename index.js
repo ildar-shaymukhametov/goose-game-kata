@@ -157,7 +157,6 @@ export class Game {
         roll2 = args[3];
       }
       const currentPlayer = this.players.find(x => x.name == player);
-      var currentSpace = currentPlayer.space;
       const rollsSum = Number(roll1) + Number(roll2);
       var newSpace = currentPlayer.space + rollsSum;
       var finalSpace;
@@ -170,7 +169,6 @@ export class Game {
       var defaultResponse;
       var bounceResponse;
       var winResponse;
-      var startingSpace = currentSpace == 0 ? "Start" : currentSpace;
       if (newSpace > 63) {
         isBounce = true;
         let result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
