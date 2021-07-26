@@ -154,21 +154,21 @@ export class Game {
         bounceResponse = `${player} rolls ${roll1}, ${roll2}. Foo moves from ${startingSpace} to 63. ${player} bounces! ${player} returns to ${finalSpace}`;
       } else if (newSpace == 6) {
         isBridge = true;
-        var result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        let result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
         finalSpace = result.space;
         bridgeResponse = result.response;
       } else if (this.gooseSpaces.includes(newSpace)) {
         isGoose = true;
-        var result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
+        let result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
         finalSpace = result.space;
         gooseResponse = result.response;
       } else if (newSpace == 63) {
         isWin = true;
-        var result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        let result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
         finalSpace = result.space;
         winResponse = result.response;
       } else {
-        var result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
+        let result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
         finalSpace = result.space;
         defaultResponse = result.response;
       }
