@@ -148,9 +148,10 @@ export class Game {
   }
 
   run(arg) {
+    var response;
+
     if (arg.includes("add player")) {
       var playerName = getPlayerName(arg, 3);
-      var response;
 
       if (!this.players.some(x => x.name == playerName)) {
         this.players.push({ name: playerName, space: 0 });
@@ -158,8 +159,6 @@ export class Game {
       } else {
         response = `${playerName}: already existing player`;
       }
-
-      return response;
     } else {
       var rolls  = getRolls(arg, this.diceThrower);
       var player = this.players.find(x => x.name == getPlayerName(arg, 2));
@@ -172,9 +171,11 @@ export class Game {
                 new DefaultResult(player, rolls))))).result();
 
       player.space = result.space;
+      response = result.response;
 
-      return result.response;
     }
+
+    return response;
 
     function getPlayerName(arg, position) {
       return arg.split(" ", position)[position - 1];
