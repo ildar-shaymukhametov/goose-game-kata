@@ -161,8 +161,7 @@ export class Game {
       var player = args[1];
       var rolls = getRolls(args, this.diceThrower);
       const currentPlayer = this.players.find(x => x.name == player);
-      const rollsSum = rolls[0] + rolls[1];
-      var nextSpace = currentPlayer.space + rollsSum;
+      const nextSpace = currentPlayer.space + rolls[0] + rolls[1];
       var result =
         new BounceResult(currentPlayer, rolls, nextSpace,
           new BridgeResult(currentPlayer, rolls, nextSpace,
