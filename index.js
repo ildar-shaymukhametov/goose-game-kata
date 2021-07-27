@@ -158,16 +158,16 @@ export class Game {
       }
       const currentPlayer = this.players.find(x => x.name == player);
       const rollsSum = Number(roll1) + Number(roll2);
-      var newSpace = currentPlayer.space + rollsSum;
+      var nextSpace = currentPlayer.space + rollsSum;
       var result;
-      if (newSpace > 63) {
-        result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
-      } else if (newSpace == 6) {
-        result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
-      } else if (this.gooseSpaces.includes(newSpace)) {
-        result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
-      } else if (newSpace == 63) {
-        result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+      if (nextSpace > 63) {
+        result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace).result();
+      } else if (nextSpace == 6) {
+        result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace).result();
+      } else if (this.gooseSpaces.includes(nextSpace)) {
+        result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace, this.gooseSpaces).result();
+      } else if (nextSpace == 63) {
+        result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace).result();
       } else {
         result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
       }
