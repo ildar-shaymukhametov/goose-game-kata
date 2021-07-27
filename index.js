@@ -159,56 +159,22 @@ export class Game {
       const currentPlayer = this.players.find(x => x.name == player);
       const rollsSum = Number(roll1) + Number(roll2);
       var newSpace = currentPlayer.space + rollsSum;
-      var finalSpace;
-      var isBridge = false;
-      var isGoose = false;
-      var isBounce = false;
-      var isWin = false;
-      var gooseResponse;
-      var bridgeResponse;
-      var defaultResponse;
-      var bounceResponse;
-      var winResponse;
       var result;
       if (newSpace > 63) {
-        isBounce = true;
         result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
-        finalSpace = result.space;
-        bounceResponse = result.response;
       } else if (newSpace == 6) {
-        isBridge = true;
         result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
-        finalSpace = result.space;
-        bridgeResponse = result.response;
       } else if (this.gooseSpaces.includes(newSpace)) {
-        isGoose = true;
         result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
-        finalSpace = result.space;
-        gooseResponse = result.response;
       } else if (newSpace == 63) {
-        isWin = true;
         result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
-        finalSpace = result.space;
-        winResponse = result.response;
       } else {
         result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
-        finalSpace = result.space;
-        defaultResponse = result.response;
       }
 
       currentPlayer.space = result.space;
 
-      if (isBounce) {
-        return bounceResponse;;
-      } else if (isBridge) {
-        return bridgeResponse;
-      } else if (isGoose) {
-        return gooseResponse;
-      } else if (isWin) {
-        return winResponse;
-      } else {
-        return defaultResponse;
-      }
+      return result.response;
     }
   }
 }
