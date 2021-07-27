@@ -29,10 +29,11 @@ class DefaultResult {
 }
 
 class WinResult {
-  constructor(player, rolls, nextSpace) {
+  constructor(player, rolls, nextSpace, next) {
     this.player = player;
     this.rolls = rolls;
     this.nextSpace = nextSpace;
+    this.next = next;
   }
   result() {
     if (this.nextSpace == 63) {
@@ -42,6 +43,8 @@ class WinResult {
       }
     }
 
+    return this.next?.result();
+
     function response(player, rolls, nextSpace) {
       var currentSpace = player.space == 0 ? "Start" : player.space;
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${nextSpace}. ${player.name} Wins!!`;
@@ -50,11 +53,12 @@ class WinResult {
 }
 
 class GooseResult {
-  constructor(player, rolls, nextSpace, gooseSpaces) {
+  constructor(player, rolls, nextSpace, gooseSpaces, next) {
     this.player = player;
     this.rolls = rolls;
     this.nextSpace = nextSpace;
     this.gooseSpaces = gooseSpaces;
+    this.next = next;
   }
   result() {
     if (this.gooseSpaces.includes(this.nextSpace)) {
@@ -76,14 +80,17 @@ class GooseResult {
         space: resultSpace
       }
     }
+
+    return this.next?.result();
   }
 }
 
 class BridgeResult {
-  constructor(player, rolls, nextSpace) {
+  constructor(player, rolls, nextSpace, next) {
     this.player = player;
     this.rolls = rolls;
     this.nextSpace = nextSpace;
+    this.next = next;
   }
   result() {
     if (this.nextSpace == 6) {
@@ -95,6 +102,8 @@ class BridgeResult {
       }
     }
 
+    return this.next?.result();
+
     function response(player, rolls, nextSpace) {
       var currentSpace = player.space == 0 ? "Start" : player.space;
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to The Bridge. ${player.name} jumps to ${nextSpace}`;
@@ -103,10 +112,11 @@ class BridgeResult {
 }
 
 class BounceResult {
-  constructor(player, rolls, nextSpace) {
+  constructor(player, rolls, nextSpace, next) {
     this.player = player;
     this.rolls = rolls;
     this.nextSpace = nextSpace;
+    this.next = next;
   }
   result() {
     if (this.nextSpace > 63) {
@@ -117,6 +127,8 @@ class BounceResult {
         space: resultSpace
       }
     }
+
+    return this.next?.result();
 
     function response(player, rolls, nextSpace) {
       var currentSpace = player.space == 0 ? "Start" : player.space;
@@ -159,18 +171,12 @@ export class Game {
       const currentPlayer = this.players.find(x => x.name == player);
       const rollsSum = Number(roll1) + Number(roll2);
       var nextSpace = currentPlayer.space + rollsSum;
-      var result;
-      if (nextSpace > 63) {
-        result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace).result();
-      } else if (nextSpace == 6) {
-        result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace).result();
-      } else if (this.gooseSpaces.includes(nextSpace)) {
-        result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace, this.gooseSpaces).result();
-      } else if (nextSpace == 63) {
-        result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace).result();
-      } else {
-        result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
-      }
+      var result =
+        new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace,
+          new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace,
+            new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace, this.gooseSpaces,
+              new WinResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace,
+                new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]))))).result();
 
       currentPlayer.space = result.space;
 
