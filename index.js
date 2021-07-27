@@ -161,7 +161,7 @@ export class Game {
         response = `${playerName}: already existing player`;
       }
     } else {
-      var rolls  = getRolls(arg, this.diceThrower);
+      var rolls = getRolls(arg, this.diceThrower);
       var player = this.players.find(x => x.name == getPlayerName(arg, 2));
       const nextSpace = player.space + rolls[0] + rolls[1];
       var result =
@@ -177,7 +177,7 @@ export class Game {
     }
 
     return response;
-    
+
     function getPlayersString(players) {
       return `players: ${players.map(x => x.name).join(", ")}`;
     }
