@@ -149,7 +149,7 @@ export class Game {
 
   run(arg) {
     if (arg.includes("add player")) {
-      var playerName = arg.split(" ")[2];
+      var playerName = getPlayerNameForAdd(arg);
       if (!this.players.some(x => x.name == playerName)) {
         this.players.push({ name: playerName, space: 0 });
         return `players: ${this.players.map(x => x.name).join(", ")}`;
@@ -174,6 +174,10 @@ export class Game {
 
     function getPlayerName(arg) {
       return arg.split(" ", 2)[1];
+    }
+
+    function getPlayerNameForAdd(arg) {
+      return arg.split(" ", 3)[2];
     }
 
     function getRolls(arg, diceThrower) {
