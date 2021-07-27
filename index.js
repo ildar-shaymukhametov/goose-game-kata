@@ -149,27 +149,27 @@ export class Game {
 
   run(arg) {
     if (arg.includes("add player")) {
-      var player = arg.split(" ")[2];
-      if (!this.players.some(x => x.name == player)) {
-        this.players.push({ name: player, space: 0 });
+      var playerName = arg.split(" ")[2];
+      if (!this.players.some(x => x.name == playerName)) {
+        this.players.push({ name: playerName, space: 0 });
         return `players: ${this.players.map(x => x.name).join(", ")}`;
       } else {
-        return `${player}: already existing player`;
+        return `${playerName}: already existing player`;
       }
     } else {
       var args = arg.split(" ").map(x => x.replace(",", ""));
-      var player = args[1];
+      var playerName = args[1];
       var rolls = getRolls(args, this.diceThrower);
-      const currentPlayer = this.players.find(x => x.name == player);
-      const nextSpace = currentPlayer.space + rolls[0] + rolls[1];
+      var player = this.players.find(x => x.name == playerName);
+      const nextSpace = player.space + rolls[0] + rolls[1];
       var result =
-        new BounceResult(currentPlayer, rolls, nextSpace,
-          new BridgeResult(currentPlayer, rolls, nextSpace,
-            new GooseResult(currentPlayer, rolls, nextSpace, this.gooseSpaces,
-              new WinResult(currentPlayer, rolls, nextSpace,
-                new DefaultResult(currentPlayer, rolls))))).result();
+        new BounceResult(player, rolls, nextSpace,
+          new BridgeResult(player, rolls, nextSpace,
+            new GooseResult(player, rolls, nextSpace, this.gooseSpaces,
+              new WinResult(player, rolls, nextSpace,
+                new DefaultResult(player, rolls))))).result();
 
-      currentPlayer.space = result.space;
+      player.space = result.space;
 
       return result.response;
     }
