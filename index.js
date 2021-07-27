@@ -157,10 +157,8 @@ export class Game {
         return `${playerName}: already existing player`;
       }
     } else {
-      var args = arg.split(" ").map(x => x.replace(",", ""));
-      var playerName = args[1];
-      var rolls = getRolls(args, this.diceThrower);
-      var player = this.players.find(x => x.name == playerName);
+      var rolls  = getRolls(arg, this.diceThrower);
+      var player = this.players.find(x => x.name == getPlayerName(arg));
       const nextSpace = player.space + rolls[0] + rolls[1];
       var result =
         new BounceResult(player, rolls, nextSpace,
@@ -174,7 +172,14 @@ export class Game {
       return result.response;
     }
 
-    function getRolls(args, diceThrower) {
+    function getPlayerName(arg) {
+      var args = arg.split(" ", 2);
+
+      return args[1]
+    }
+
+    function getRolls(arg, diceThrower) {
+      var args = arg.split(" ").map(x => x.replace(",", ""));
       var roll1 = args.length == 2 ? diceThrower.throw() : Number(args[2]);
       var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
 
