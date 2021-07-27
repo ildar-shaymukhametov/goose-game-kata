@@ -169,33 +169,34 @@ export class Game {
       var defaultResponse;
       var bounceResponse;
       var winResponse;
+      var result;
       if (newSpace > 63) {
         isBounce = true;
-        let result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        result = new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
         finalSpace = result.space;
         bounceResponse = result.response;
       } else if (newSpace == 6) {
         isBridge = true;
-        let result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        result = new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
         finalSpace = result.space;
         bridgeResponse = result.response;
       } else if (this.gooseSpaces.includes(newSpace)) {
         isGoose = true;
-        let result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
+        result = new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace, this.gooseSpaces).result();
         finalSpace = result.space;
         gooseResponse = result.response;
       } else if (newSpace == 63) {
         isWin = true;
-        let result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
+        result = new WinResult(currentPlayer, [Number(roll1), Number(roll2)], newSpace).result();
         finalSpace = result.space;
         winResponse = result.response;
       } else {
-        let result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
+        result = new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]).result();
         finalSpace = result.space;
         defaultResponse = result.response;
       }
 
-      currentPlayer.space = finalSpace;
+      currentPlayer.space = result.space;
 
       if (isBounce) {
         return bounceResponse;;
