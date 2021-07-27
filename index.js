@@ -149,7 +149,7 @@ export class Game {
 
   run(arg) {
     if (arg.includes("add player")) {
-      var playerName = getPlayerNameForAdd(arg);
+      var playerName = getPlayerName(arg, 3);
       if (!this.players.some(x => x.name == playerName)) {
         this.players.push({ name: playerName, space: 0 });
         return `players: ${this.players.map(x => x.name).join(", ")}`;
@@ -158,7 +158,7 @@ export class Game {
       }
     } else {
       var rolls  = getRolls(arg, this.diceThrower);
-      var player = this.players.find(x => x.name == getPlayerNameForMove(arg));
+      var player = this.players.find(x => x.name == getPlayerName(arg, 2));
       const nextSpace = player.space + rolls[0] + rolls[1];
       var result =
         new BounceResult(player, rolls, nextSpace,
@@ -172,12 +172,8 @@ export class Game {
       return result.response;
     }
 
-    function getPlayerNameForMove(arg) {
-      return arg.split(" ", 2)[1];
-    }
-
-    function getPlayerNameForAdd(arg) {
-      return arg.split(" ", 3)[2];
+    function getPlayerName(arg, position) {
+      return arg.split(" ", position)[position - 1];
     }
 
     function getRolls(arg, diceThrower) {
