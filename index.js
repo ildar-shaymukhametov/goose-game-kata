@@ -153,7 +153,8 @@ export class Game {
     if (arg.includes("add player")) {
       var playerName = getPlayerName(arg, 3);
 
-      if (!this.players.some(x => x.name == playerName)) {
+      const playerExists = this.players.some(x => x.name == playerName);
+      if (!playerExists) {
         this.players.push({ name: playerName, space: 0 });
         response = getPlayersString(this.players);
       } else {
