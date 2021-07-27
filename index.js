@@ -159,28 +159,27 @@ export class Game {
     } else {
       var args = arg.split(" ").map(x => x.replace(",", ""));
       var player = args[1];
-      var roll1;
-      var roll2;
-      if (args.length == 2) {
-        roll1 = this.diceThrower.throw();
-        roll2 = this.diceThrower.throw();
-      } else {
-        roll1 = args[2];
-        roll2 = args[3];
-      }
+      var rolls = getRolls(args, this.diceThrower);
       const currentPlayer = this.players.find(x => x.name == player);
-      const rollsSum = Number(roll1) + Number(roll2);
+      const rollsSum = rolls[0] + rolls[1];
       var nextSpace = currentPlayer.space + rollsSum;
       var result =
-        new BounceResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace,
-          new BridgeResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace,
-            new GooseResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace, this.gooseSpaces,
-              new WinResult(currentPlayer, [Number(roll1), Number(roll2)], nextSpace,
-                new DefaultResult(currentPlayer, [Number(roll1), Number(roll2)]))))).result();
+        new BounceResult(currentPlayer, rolls, nextSpace,
+          new BridgeResult(currentPlayer, rolls, nextSpace,
+            new GooseResult(currentPlayer, rolls, nextSpace, this.gooseSpaces,
+              new WinResult(currentPlayer, rolls, nextSpace,
+                new DefaultResult(currentPlayer, rolls))))).result();
 
       currentPlayer.space = result.space;
 
       return result.response;
+    }
+
+    function getRolls(args, diceThrower) {
+      var roll1 = args.length == 2 ? diceThrower.throw() : Number(args[2]);
+      var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
+
+      return [roll1, roll2];
     }
   }
 }
