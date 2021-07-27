@@ -173,9 +173,7 @@ export class Game {
     }
 
     function getPlayerName(arg) {
-      var args = arg.split(" ", 2);
-
-      return args[1]
+      return arg.split(" ", 2)[1];
     }
 
     function getRolls(arg, diceThrower) {
