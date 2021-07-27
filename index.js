@@ -150,12 +150,16 @@ export class Game {
   run(arg) {
     if (arg.includes("add player")) {
       var playerName = getPlayerName(arg, 3);
+      var response;
+
       if (!this.players.some(x => x.name == playerName)) {
         this.players.push({ name: playerName, space: 0 });
-        return `players: ${this.players.map(x => x.name).join(", ")}`;
+        response = `players: ${this.players.map(x => x.name).join(", ")}`;
       } else {
-        return `${playerName}: already existing player`;
+        response = `${playerName}: already existing player`;
       }
+
+      return response;
     } else {
       var rolls  = getRolls(arg, this.diceThrower);
       var player = this.players.find(x => x.name == getPlayerName(arg, 2));
