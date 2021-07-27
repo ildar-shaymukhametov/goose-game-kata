@@ -158,7 +158,7 @@ export class Game {
       }
     } else {
       var rolls  = getRolls(arg, this.diceThrower);
-      var player = this.players.find(x => x.name == getPlayerName(arg));
+      var player = this.players.find(x => x.name == getPlayerNameForMove(arg));
       const nextSpace = player.space + rolls[0] + rolls[1];
       var result =
         new BounceResult(player, rolls, nextSpace,
@@ -172,7 +172,7 @@ export class Game {
       return result.response;
     }
 
-    function getPlayerName(arg) {
+    function getPlayerNameForMove(arg) {
       return arg.split(" ", 2)[1];
     }
 
