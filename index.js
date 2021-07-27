@@ -155,7 +155,7 @@ export class Game {
 
       if (!this.players.some(x => x.name == playerName)) {
         this.players.push({ name: playerName, space: 0 });
-        response = `players: ${this.players.map(x => x.name).join(", ")}`;
+        response = getPlayersString(this.players);
       } else {
         response = `${playerName}: already existing player`;
       }
@@ -176,6 +176,10 @@ export class Game {
     }
 
     return response;
+    
+    function getPlayersString(players) {
+      return `players: ${players.map(x => x.name).join(", ")}`;
+    }
 
     function getPlayerName(arg, position) {
       return arg.split(" ", position)[position - 1];
