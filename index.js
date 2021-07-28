@@ -149,10 +149,10 @@ export class Game {
   run(arg) {
     var response;
     var playerName = getPlayerName(arg);
+    var player = this.players.find(x => x.name == playerName);
 
     if (arg.includes("add player")) {
-      const playerExists = this.players.some(x => x.name == playerName);
-      if (!playerExists) {
+      if (!player) {
         this.players.push({ name: playerName, space: 0 });
         response = getPlayersString(this.players);
       } else {
@@ -160,7 +160,6 @@ export class Game {
       }
     } else {
       var rolls = getRolls(arg, this.diceThrower);
-      var player = this.players.find(x => x.name == playerName);
       const nextSpace = player.space + rolls[0] + rolls[1];
       var result =
         new BounceResult(player, rolls, nextSpace,
