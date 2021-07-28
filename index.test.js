@@ -65,29 +65,29 @@ it("game responds when player continues moving", () => {
   expect(response).toEqual(expected);
 })
 
-it("game responds when player wins by landing on space 63", () => {
-  var game = new Game();
+it("game responds when player wins by landing on win space", () => {
+  var game = new Game({ winSpace: 13 });
   game.run("add player Foo");
-  game.run("move Foo 60, 0");
+  game.run("move Foo 10, 0");
   var response = game.run("move Foo 1, 2");
-  var expected = "Foo rolls 1, 2. Foo moves from 60 to 63. Foo Wins!!";
+  var expected = "Foo rolls 1, 2. Foo moves from 10 to 13. Foo Wins!!";
   expect(response).toEqual(expected);
 })
 
 it("player bounces if overthrow", () => {
-  var game = new Game();
+  var game = new Game({ winSpace: 13 });
   game.run("add player Foo");
-  game.run("move Foo 60, 0");
+  game.run("move Foo 10, 0");
   game.run("move Foo 3, 2");
-  expect(game.players.find(x => x.name == "Foo").space).toEqual(61);
+  expect(game.players.find(x => x.name == "Foo").space).toEqual(11);
 })
 
 it("game responds when player bounces", () => {
-  var game = new Game();
+  var game = new Game({ winSpace: 13 });
   game.run("add player Foo");
-  game.run("move Foo 60, 0");
+  game.run("move Foo 10, 0");
   var response = game.run("move Foo 3, 2");
-  var expected = "Foo rolls 3, 2. Foo moves from 60 to 63. Foo bounces! Foo returns to 61";
+  var expected = "Foo rolls 3, 2. Foo moves from 10 to 13. Foo bounces! Foo returns to 11";
   expect(response).toEqual(expected);
 })
 

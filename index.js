@@ -32,13 +32,14 @@ class DefaultResult extends Result {
 }
 
 class WinResult extends Result {
-  constructor(player, rolls, nextSpace, next) {
+  constructor(player, rolls, nextSpace, winSpace, next) {
     super(player, rolls);
     this.nextSpace = nextSpace;
     this.next = next;
+    this.winSpace = winSpace;
   }
   result() {
-    if (this.nextSpace == 63) {
+    if (this.nextSpace == this.winSpace) {
       return {
         response: response(this.player, this.rolls, this.nextSpace),
         space: this.nextSpace
@@ -112,26 +113,27 @@ class BridgeResult extends Result {
 }
 
 class BounceResult extends Result {
-  constructor(player, rolls, nextSpace, next) {
+  constructor(player, rolls, nextSpace, winSpace, next) {
     super(player, rolls);
     this.nextSpace = nextSpace;
     this.next = next;
+    this.winSpace = winSpace;
   }
   result() {
-    if (this.nextSpace > 63) {
-      var resultSpace = 63 - (this.nextSpace - 63);
+    if (this.nextSpace > this.winSpace) {
+      var resultSpace = this.winSpace - (this.nextSpace - this.winSpace);
 
       return {
-        response: response(this.player, this.rolls, resultSpace),
+        response: response(this.player, this.rolls, resultSpace, this.winSpace),
         space: resultSpace
       }
     }
 
     return this.next?.result();
 
-    function response(player, rolls, nextSpace) {
+    function response(player, rolls, nextSpace, winSpace) {
       var currentSpace = player.space == 0 ? "Start" : player.space;
-      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to 63. ${player.name} bounces! ${player.name} returns to ${nextSpace}`;
+      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${winSpace}. ${player.name} bounces! ${player.name} returns to ${nextSpace}`;
     }
   }
 }
@@ -157,20 +159,21 @@ class AddPlayerHandler {
 }
 
 class MovePlayerHandler {
-  constructor(player, diceThrower, gooseSpaces, arg) {
+  constructor(player, diceThrower, gooseSpaces, winSpace, arg) {
     this.player = player;
     this.arg = arg;
     this.diceThrower = diceThrower;
     this.gooseSpaces = gooseSpaces;
+    this.winSpace = winSpace;
   }
   handle() {
     var rolls = getRolls(this.arg, this.diceThrower);
     const nextSpace = this.player.space + rolls[0] + rolls[1];
     var result =
-      new BounceResult(this.player, rolls, nextSpace,
+      new BounceResult(this.player, rolls, nextSpace, this.winSpace,
         new BridgeResult(this.player, rolls, nextSpace,
           new GooseResult(this.player, rolls, nextSpace, this.gooseSpaces,
-            new WinResult(this.player, rolls, nextSpace,
+            new WinResult(this.player, rolls, nextSpace, this.winSpace,
               new DefaultResult(this.player, rolls))))).result();
 
     this.player.space = result.space;
@@ -189,11 +192,13 @@ class MovePlayerHandler {
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
-    gooseSpaces = [5, 9, 14, 18, 23, 27]
+    gooseSpaces = [5, 9, 14, 18, 23, 27],
+    winSpace = 63
   } = {}) {
     this.players = [];
     this.diceThrower = diceThrower;
     this.gooseSpaces = gooseSpaces;
+    this.winSpace = winSpace;
   }
 
   run(arg) {
@@ -204,7 +209,7 @@ export class Game {
       response = new AddPlayerHandler(this.players, playerName).handle();
     } else {
       var player = this.players.find(x => x.name == playerName);
-      response = new MovePlayerHandler(player, this.diceThrower, this.gooseSpaces, arg).handle();
+      response = new MovePlayerHandler(player, this.diceThrower, this.gooseSpaces, this.winSpace, arg).handle();
     }
 
     return response;
