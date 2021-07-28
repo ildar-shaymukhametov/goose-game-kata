@@ -208,13 +208,14 @@ export class Game {
     }
 
     return response;
+
+    function getPlayerName(arg) {
+      var args = arg.split(" ");
+      if (arg.includes("add player")) {
+        return args[2];
+      }
+      return args[1];
+    }
   }
 }
 
-function getPlayerName(arg) {
-  var args = arg.split(" ");
-  if (arg.includes("add player")) {
-    return args[2];
-  }
-  return args[1];
-}
