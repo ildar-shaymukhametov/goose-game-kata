@@ -156,6 +156,36 @@ class AddPlayerHandler {
   }
 }
 
+class MovePlayerHandler {
+  constructor(player, diceThrower, gooseSpaces, arg) {
+    this.player = player;
+    this.arg = arg;
+    this.diceThrower = diceThrower;
+    this.gooseSpaces = gooseSpaces;
+  }
+  handle() {
+    var rolls = getRolls(this.arg, this.diceThrower);
+    const nextSpace = this.player.space + rolls[0] + rolls[1];
+    var result =
+      new BounceResult(this.player, rolls, nextSpace,
+        new BridgeResult(this.player, rolls, nextSpace,
+          new GooseResult(this.player, rolls, nextSpace, this.gooseSpaces,
+            new WinResult(this.player, rolls, nextSpace,
+              new DefaultResult(this.player, rolls))))).result();
+
+    this.player.space = result.space;
+    return result.response;
+
+    function getRolls(arg, diceThrower) {
+      var args = arg.split(" ").map(x => x.replace(",", ""));
+      var roll1 = args.length == 2 ? diceThrower.throw() : Number(args[2]);
+      var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
+
+      return [roll1, roll2];
+    }
+  }
+}
+
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
@@ -169,22 +199,12 @@ export class Game {
   run(arg) {
     var response;
     var playerName = getPlayerName(arg);
-    var player = this.players.find(x => x.name == playerName);
 
     if (arg.includes("add player")) {
       response = new AddPlayerHandler(this.players, playerName).handle();
     } else {
-      var rolls = getRolls(arg, this.diceThrower);
-      const nextSpace = player.space + rolls[0] + rolls[1];
-      var result =
-        new BounceResult(player, rolls, nextSpace,
-          new BridgeResult(player, rolls, nextSpace,
-            new GooseResult(player, rolls, nextSpace, this.gooseSpaces,
-              new WinResult(player, rolls, nextSpace,
-                new DefaultResult(player, rolls))))).result();
-
-      player.space = result.space;
-      response = result.response;
+      var player = this.players.find(x => x.name == playerName);
+      response = new MovePlayerHandler(player, this.diceThrower, this.gooseSpaces, arg).handle();
     }
 
     return response;
@@ -197,12 +217,4 @@ function getPlayerName(arg) {
     return args[2];
   }
   return args[1];
-}
-
-function getRolls(arg, diceThrower) {
-  var args = arg.split(" ").map(x => x.replace(",", ""));
-  var roll1 = args.length == 2 ? diceThrower.throw() : Number(args[2]);
-  var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
-
-  return [roll1, roll2];
 }
