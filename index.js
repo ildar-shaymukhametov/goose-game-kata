@@ -172,25 +172,24 @@ export class Game {
 
       player.space = result.space;
       response = result.response;
-
     }
 
     return response;
-
-    function getPlayersString(players) {
-      return `players: ${players.map(x => x.name).join(", ")}`;
-    }
-
-    function getPlayerName(arg, position) {
-      return arg.split(" ", position)[position - 1];
-    }
-
-    function getRolls(arg, diceThrower) {
-      var args = arg.split(" ").map(x => x.replace(",", ""));
-      var roll1 = args.length == 2 ? diceThrower.throw() : Number(args[2]);
-      var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
-
-      return [roll1, roll2];
-    }
   }
+}
+
+function getPlayersString(players) {
+  return `players: ${players.map(x => x.name).join(", ")}`;
+}
+
+function getPlayerName(arg, position) {
+  return arg.split(" ", position)[position - 1];
+}
+
+function getRolls(arg, diceThrower) {
+  var args = arg.split(" ").map(x => x.replace(",", ""));
+  var roll1 = args.length == 2 ? diceThrower.throw() : Number(args[2]);
+  var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
+
+  return [roll1, roll2];
 }
