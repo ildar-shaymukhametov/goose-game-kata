@@ -6,11 +6,14 @@ class DiceThrower {
   }
 }
 
-class DefaultResult {
+class Result {
   constructor(player, rolls) {
     this.player = player;
     this.rolls = rolls;
   }
+}
+
+class DefaultResult extends Result {
   result() {
     var resultSpace = space(this.player, this.rolls);
     return {
@@ -28,10 +31,9 @@ class DefaultResult {
   }
 }
 
-class WinResult {
+class WinResult extends Result {
   constructor(player, rolls, nextSpace, next) {
-    this.player = player;
-    this.rolls = rolls;
+    super(player, rolls);
     this.nextSpace = nextSpace;
     this.next = next;
   }
@@ -52,10 +54,9 @@ class WinResult {
   }
 }
 
-class GooseResult {
+class GooseResult extends Result {
   constructor(player, rolls, nextSpace, gooseSpaces, next) {
-    this.player = player;
-    this.rolls = rolls;
+    super(player, rolls);
     this.nextSpace = nextSpace;
     this.gooseSpaces = gooseSpaces;
     this.next = next;
@@ -85,10 +86,9 @@ class GooseResult {
   }
 }
 
-class BridgeResult {
+class BridgeResult extends Result {
   constructor(player, rolls, nextSpace, next) {
-    this.player = player;
-    this.rolls = rolls;
+    super(player, rolls);
     this.nextSpace = nextSpace;
     this.next = next;
   }
@@ -111,10 +111,9 @@ class BridgeResult {
   }
 }
 
-class BounceResult {
+class BounceResult extends Result {
   constructor(player, rolls, nextSpace, next) {
-    this.player = player;
-    this.rolls = rolls;
+    super(player, rolls);
     this.nextSpace = nextSpace;
     this.next = next;
   }
