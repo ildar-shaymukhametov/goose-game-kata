@@ -136,6 +136,26 @@ class BounceResult extends Result {
   }
 }
 
+class AddPlayerHandler {
+  constructor(players, playerName) {
+    this.players = players;
+    this.playerName = playerName;
+  }
+  handle() {
+    var playerExists = this.players.some(x => x.name == this.playerName);
+    if (playerExists) {
+      return `${this.playerName}: already existing player`;
+    }
+
+    this.players.push({ name: this.playerName, space: 0 });
+    return getPlayersString(this.players);
+
+    function getPlayersString(players) {
+      return `players: ${players.map(x => x.name).join(", ")}`;
+    }
+  }
+}
+
 export class Game {
   constructor({
     diceThrower = new DiceThrower(),
@@ -152,12 +172,7 @@ export class Game {
     var player = this.players.find(x => x.name == playerName);
 
     if (arg.includes("add player")) {
-      if (!player) {
-        this.players.push({ name: playerName, space: 0 });
-        response = getPlayersString(this.players);
-      } else {
-        response = `${playerName}: already existing player`;
-      }
+      response = new AddPlayerHandler(this.players, playerName).handle();
     } else {
       var rolls = getRolls(arg, this.diceThrower);
       const nextSpace = player.space + rolls[0] + rolls[1];
@@ -174,10 +189,6 @@ export class Game {
 
     return response;
   }
-}
-
-function getPlayersString(players) {
-  return `players: ${players.map(x => x.name).join(", ")}`;
 }
 
 function getPlayerName(arg) {
