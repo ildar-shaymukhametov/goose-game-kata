@@ -14,6 +14,9 @@ class Result {
   get currentSpace() {
     return this.player.space == 0 ? "Start" : this.player.space;
   }
+  get nextSpace() {
+    return this.player.space + this.rolls[0] + this.rolls[1];
+  }
 }
 
 class DefaultResult extends Result {
@@ -35,9 +38,8 @@ class DefaultResult extends Result {
 }
 
 class WinResult extends Result {
-  constructor(player, rolls, nextSpace, winSpace, next) {
+  constructor(player, rolls, winSpace, next) {
     super(player, rolls);
-    this.nextSpace = nextSpace;
     this.next = next;
     this.winSpace = winSpace;
   }
@@ -59,9 +61,8 @@ class WinResult extends Result {
 }
 
 class GooseResult extends Result {
-  constructor(player, rolls, nextSpace, gooseSpaces, next) {
+  constructor(player, rolls, gooseSpaces, next) {
     super(player, rolls);
-    this.nextSpace = nextSpace;
     this.gooseSpaces = gooseSpaces;
     this.next = next;
   }
@@ -90,9 +91,8 @@ class GooseResult extends Result {
 }
 
 class BridgeResult extends Result {
-  constructor(player, rolls, nextSpace, next) {
+  constructor(player, rolls, next) {
     super(player, rolls);
-    this.nextSpace = nextSpace;
     this.next = next;
   }
   result() {
@@ -114,9 +114,8 @@ class BridgeResult extends Result {
 }
 
 class BounceResult extends Result {
-  constructor(player, rolls, nextSpace, winSpace, next) {
+  constructor(player, rolls, winSpace, next) {
     super(player, rolls);
-    this.nextSpace = nextSpace;
     this.next = next;
     this.winSpace = winSpace;
   }
@@ -178,12 +177,11 @@ class MovePlayerHandler {
     var playerName = this.arg.split(" ")[1];
     var player = this.game.players.find(x => x.name == playerName);
     var rolls = getRolls(this.arg, this.game.diceThrower);
-    const nextSpace = player.space + rolls[0] + rolls[1];
     var result =
-      new BounceResult(player, rolls, nextSpace, this.game.winSpace,
-        new BridgeResult(player, rolls, nextSpace,
-          new GooseResult(player, rolls, nextSpace, this.game.gooseSpaces,
-            new WinResult(player, rolls, nextSpace, this.game.winSpace,
+      new BounceResult(player, rolls, this.game.winSpace,
+        new BridgeResult(player, rolls,
+          new GooseResult(player, rolls, this.game.gooseSpaces,
+            new WinResult(player, rolls, this.game.winSpace,
               new DefaultResult(player, rolls))))).result();
 
     player.space = result.space;
