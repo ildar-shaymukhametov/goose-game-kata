@@ -139,9 +139,8 @@ class BounceResult extends Result {
 }
 
 class AddPlayerHandler {
-  constructor(game, arg, playerName, next) {
+  constructor(game, arg, next) {
     this.game = game;
-    this.playerName = playerName;
     this.arg = arg;
     this.next = next;
   }
@@ -150,12 +149,13 @@ class AddPlayerHandler {
       return this.next?.handle();
     }
 
-    var playerExists = this.game.players.some(x => x.name == this.playerName);
+    var playerName = this.arg.split(" ")[2];
+    var playerExists = this.game.players.some(x => x.name == playerName);
     if (playerExists) {
-      return `${this.playerName}: already existing player`;
+      return `${playerName}: already existing player`;
     }
 
-    this.game.players.push({ name: this.playerName, space: 0 });
+    this.game.players.push({ name: playerName, space: 0 });
     return getPlayersString(this.game.players);
 
     function getPlayersString(players) {
@@ -165,18 +165,18 @@ class AddPlayerHandler {
 }
 
 class MovePlayerHandler {
-  constructor(game, arg, playerName, next) {
+  constructor(game, arg, next) {
     this.arg = arg;
     this.next = next;
     this.game = game;
-    this.playerName = playerName;
   }
   handle() {
     if (!this.arg.includes("move")) {
       return this.next?.handle();
     }
-
-    var player = this.game.players.find(x => x.name == this.playerName);
+    
+    var playerName = this.arg.split(" ")[1];
+    var player = this.game.players.find(x => x.name == playerName);
     var rolls = getRolls(this.arg, this.game.diceThrower);
     const nextSpace = player.space + rolls[0] + rolls[1];
     var result =
@@ -212,17 +212,8 @@ export class Game {
   }
 
   run(arg) {
-    var playerName = getPlayerName(arg);
-    return new AddPlayerHandler(this, arg, playerName,
-      new MovePlayerHandler(this, arg, playerName)).handle();
-
-    function getPlayerName(arg) {
-      var args = arg.split(" ");
-      if (arg.includes("add player")) {
-        return args[2];
-      }
-      return args[1];
-    }
+    return new AddPlayerHandler(this, arg,
+      new MovePlayerHandler(this, arg)).handle();
   }
 }
 
