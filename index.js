@@ -22,8 +22,8 @@ class DefaultResult extends Result {
     }
 
     function response(player, rolls, resultSpace) {
-      var startingSpace = player.space == 0 ? "Start" : player.space;
-      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${startingSpace} to ${resultSpace}`;
+      var currentSpace = player.space == 0 ? "Start" : player.space;
+      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${resultSpace}`;
     }
     function space(player, rolls) {
       return player.space + rolls[0] + rolls[1];
