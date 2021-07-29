@@ -17,17 +17,16 @@ class Result {
   get nextSpace() {
     return this.player.space + this.rolls[0] + this.rolls[1];
   }
+  get defaultResponse() {
+    return `${this.player.name} rolls ${this.rolls[0]}, ${this.rolls[1]}. Foo moves from ${this.currentSpace} to ${this.nextSpace}`;
+  }
 }
 
 class DefaultResult extends Result {
   result() {
     return {
-      response: response(this.player, this.rolls, this.nextSpace, this.currentSpace),
+      response: this.defaultResponse,
       space: this.nextSpace
-    }
-
-    function response(player, rolls, resultSpace, currentSpace) {
-      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${resultSpace}`;
     }
   }
 }
@@ -41,16 +40,12 @@ class WinResult extends Result {
   result() {
     if (this.nextSpace == this.winSpace) {
       return {
-        response: response(this.player, this.rolls, this.nextSpace, this.currentSpace),
+        response: `${this.defaultResponse}. ${this.player.name} Wins!!`,
         space: this.nextSpace
       }
     }
 
     return this.next?.result();
-
-    function response(player, rolls, nextSpace, currentSpace) {
-      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${nextSpace}. ${player.name} Wins!!`;
-    }
   }
 }
 
@@ -63,7 +58,7 @@ class GooseResult extends Result {
   result() {
     if (this.gooseSpaces.includes(this.nextSpace)) {
       var resultSpace = this.nextSpace;
-      var response = `${this.player.name} rolls ${this.rolls[0]}, ${this.rolls[1]}. Foo moves from ${this.currentSpace} to ${this.nextSpace}, The Goose.`;
+      var response = `${this.defaultResponse}, The Goose.`;
 
       while (this.gooseSpaces.includes(resultSpace)) {
         resultSpace += this.rolls[0] + this.rolls[1];
