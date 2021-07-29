@@ -173,7 +173,7 @@ class MovePlayerHandler {
     if (!this.arg.includes("move")) {
       return this.next?.handle();
     }
-    
+
     var playerName = this.arg.split(" ")[1];
     var player = this.game.players.find(x => x.name == playerName);
     var rolls = getRolls(this.arg, this.game.diceThrower);
