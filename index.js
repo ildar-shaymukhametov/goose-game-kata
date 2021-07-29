@@ -139,8 +139,8 @@ class BounceResult extends Result {
 }
 
 class AddPlayerHandler {
-  constructor(players, playerName, arg, next) {
-    this.players = players;
+  constructor(game, arg, playerName, next) {
+    this.game = game;
     this.playerName = playerName;
     this.arg = arg;
     this.next = next;
@@ -150,13 +150,13 @@ class AddPlayerHandler {
       return this.next?.handle();
     }
 
-    var playerExists = this.players.some(x => x.name == this.playerName);
+    var playerExists = this.game.players.some(x => x.name == this.playerName);
     if (playerExists) {
       return `${this.playerName}: already existing player`;
     }
 
-    this.players.push({ name: this.playerName, space: 0 });
-    return getPlayersString(this.players);
+    this.game.players.push({ name: this.playerName, space: 0 });
+    return getPlayersString(this.game.players);
 
     function getPlayersString(players) {
       return `players: ${players.map(x => x.name).join(", ")}`;
@@ -165,29 +165,28 @@ class AddPlayerHandler {
 }
 
 class MovePlayerHandler {
-  constructor(player, diceThrower, gooseSpaces, winSpace, arg, next) {
-    this.player = player;
+  constructor(game, arg, playerName, next) {
     this.arg = arg;
-    this.diceThrower = diceThrower;
-    this.gooseSpaces = gooseSpaces;
-    this.winSpace = winSpace;
     this.next = next;
+    this.game = game;
+    this.playerName = playerName;
   }
   handle() {
     if (!this.arg.includes("move")) {
       return this.next?.handle();
     }
 
-    var rolls = getRolls(this.arg, this.diceThrower);
-    const nextSpace = this.player.space + rolls[0] + rolls[1];
+    var player = this.game.players.find(x => x.name == this.playerName);
+    var rolls = getRolls(this.arg, this.game.diceThrower);
+    const nextSpace = player.space + rolls[0] + rolls[1];
     var result =
-      new BounceResult(this.player, rolls, nextSpace, this.winSpace,
-        new BridgeResult(this.player, rolls, nextSpace,
-          new GooseResult(this.player, rolls, nextSpace, this.gooseSpaces,
-            new WinResult(this.player, rolls, nextSpace, this.winSpace,
-              new DefaultResult(this.player, rolls))))).result();
+      new BounceResult(player, rolls, nextSpace, this.game.winSpace,
+        new BridgeResult(player, rolls, nextSpace,
+          new GooseResult(player, rolls, nextSpace, this.game.gooseSpaces,
+            new WinResult(player, rolls, nextSpace, this.game.winSpace,
+              new DefaultResult(player, rolls))))).result();
 
-    this.player.space = result.space;
+    player.space = result.space;
     return result.response;
 
     function getRolls(arg, diceThrower) {
@@ -216,8 +215,8 @@ export class Game {
     var response;
     var playerName = getPlayerName(arg);
     response =
-      new AddPlayerHandler(this.players, playerName, arg,
-        new MovePlayerHandler(this.players.find(x => x.name == playerName), this.diceThrower, this.gooseSpaces, this.winSpace, arg)).handle();
+      new AddPlayerHandler(this, arg, playerName,
+        new MovePlayerHandler(this, arg, playerName)).handle();
 
     return response;
 
