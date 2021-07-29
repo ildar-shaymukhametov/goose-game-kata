@@ -139,11 +139,17 @@ class BounceResult extends Result {
 }
 
 class AddPlayerHandler {
-  constructor(players, playerName) {
+  constructor(players, playerName, arg, next) {
     this.players = players;
     this.playerName = playerName;
+    this.arg = arg;
+    this.next = next;
   }
   handle() {
+    if (!this.arg.includes("add player")) {
+      return this.next?.handle();
+    }
+
     var playerExists = this.players.some(x => x.name == this.playerName);
     if (playerExists) {
       return `${this.playerName}: already existing player`;
@@ -159,14 +165,19 @@ class AddPlayerHandler {
 }
 
 class MovePlayerHandler {
-  constructor(player, diceThrower, gooseSpaces, winSpace, arg) {
+  constructor(player, diceThrower, gooseSpaces, winSpace, arg, next) {
     this.player = player;
     this.arg = arg;
     this.diceThrower = diceThrower;
     this.gooseSpaces = gooseSpaces;
     this.winSpace = winSpace;
+    this.next = next;
   }
   handle() {
+    if (!this.arg.includes("move")) {
+      return this.next?.handle();
+    }
+
     var rolls = getRolls(this.arg, this.diceThrower);
     const nextSpace = this.player.space + rolls[0] + rolls[1];
     var result =
@@ -204,13 +215,9 @@ export class Game {
   run(arg) {
     var response;
     var playerName = getPlayerName(arg);
-
-    if (arg.includes("add player")) {
-      response = new AddPlayerHandler(this.players, playerName).handle();
-    } else {
-      var player = this.players.find(x => x.name == playerName);
-      response = new MovePlayerHandler(player, this.diceThrower, this.gooseSpaces, this.winSpace, arg).handle();
-    }
+    response =
+      new AddPlayerHandler(this.players, playerName, arg,
+        new MovePlayerHandler(this.players.find(x => x.name == playerName), this.diceThrower, this.gooseSpaces, this.winSpace, arg)).handle();
 
     return response;
 
