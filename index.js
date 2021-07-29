@@ -21,17 +21,13 @@ class Result {
 
 class DefaultResult extends Result {
   result() {
-    var resultSpace = space(this.player, this.rolls);
     return {
-      response: response(this.player, this.rolls, resultSpace, this.currentSpace),
-      space: resultSpace
+      response: response(this.player, this.rolls, this.nextSpace, this.currentSpace),
+      space: this.nextSpace
     }
 
     function response(player, rolls, resultSpace, currentSpace) {
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${resultSpace}`;
-    }
-    function space(player, rolls) {
-      return player.space + rolls[0] + rolls[1];
     }
   }
 }
