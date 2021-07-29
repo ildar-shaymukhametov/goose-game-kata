@@ -212,13 +212,9 @@ export class Game {
   }
 
   run(arg) {
-    var response;
     var playerName = getPlayerName(arg);
-    response =
-      new AddPlayerHandler(this, arg, playerName,
-        new MovePlayerHandler(this, arg, playerName)).handle();
-
-    return response;
+    return new AddPlayerHandler(this, arg, playerName,
+      new MovePlayerHandler(this, arg, playerName)).handle();
 
     function getPlayerName(arg) {
       var args = arg.split(" ");
