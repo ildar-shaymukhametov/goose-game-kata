@@ -28,7 +28,6 @@ class DefaultResult extends Result {
     }
 
     function response(player, rolls, resultSpace, currentSpace) {
-      var currentSpace = player.space == 0 ? "Start" : player.space;
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${resultSpace}`;
     }
     function space(player, rolls) {
@@ -54,7 +53,6 @@ class WinResult extends Result {
     return this.next?.result();
 
     function response(player, rolls, nextSpace, currentSpace) {
-      var currentSpace = player.space == 0 ? "Start" : player.space;
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${nextSpace}. ${player.name} Wins!!`;
     }
   }
