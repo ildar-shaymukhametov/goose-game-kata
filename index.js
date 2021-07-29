@@ -11,17 +11,20 @@ class Result {
     this.player = player;
     this.rolls = rolls;
   }
+  get currentSpace() {
+    return this.player.space == 0 ? "Start" : this.player.space;
+  }
 }
 
 class DefaultResult extends Result {
   result() {
     var resultSpace = space(this.player, this.rolls);
     return {
-      response: response(this.player, this.rolls, resultSpace),
+      response: response(this.player, this.rolls, resultSpace, this.currentSpace),
       space: resultSpace
     }
 
-    function response(player, rolls, resultSpace) {
+    function response(player, rolls, resultSpace, currentSpace) {
       var currentSpace = player.space == 0 ? "Start" : player.space;
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${resultSpace}`;
     }
@@ -41,14 +44,14 @@ class WinResult extends Result {
   result() {
     if (this.nextSpace == this.winSpace) {
       return {
-        response: response(this.player, this.rolls, this.nextSpace),
+        response: response(this.player, this.rolls, this.nextSpace, this.currentSpace),
         space: this.nextSpace
       }
     }
 
     return this.next?.result();
 
-    function response(player, rolls, nextSpace) {
+    function response(player, rolls, nextSpace, currentSpace) {
       var currentSpace = player.space == 0 ? "Start" : player.space;
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${nextSpace}. ${player.name} Wins!!`;
     }
@@ -65,8 +68,7 @@ class GooseResult extends Result {
   result() {
     if (this.gooseSpaces.includes(this.nextSpace)) {
       var resultSpace = this.nextSpace;
-      var currentSpace = this.player.space == 0 ? "Start" : this.player.space;
-      var response = `${this.player.name} rolls ${this.rolls[0]}, ${this.rolls[1]}. Foo moves from ${currentSpace} to ${this.nextSpace}, The Goose.`;
+      var response = `${this.player.name} rolls ${this.rolls[0]}, ${this.rolls[1]}. Foo moves from ${this.currentSpace} to ${this.nextSpace}, The Goose.`;
 
       while (this.gooseSpaces.includes(resultSpace)) {
         resultSpace += this.rolls[0] + this.rolls[1];
@@ -98,15 +100,14 @@ class BridgeResult extends Result {
       var resultSpace = 12;
 
       return {
-        response: response(this.player, this.rolls, resultSpace),
+        response: response(this.player, this.rolls, resultSpace, this.currentSpace),
         space: resultSpace
       }
     }
 
     return this.next?.result();
 
-    function response(player, rolls, nextSpace) {
-      var currentSpace = player.space == 0 ? "Start" : player.space;
+    function response(player, rolls, nextSpace, currentSpace) {
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to The Bridge. ${player.name} jumps to ${nextSpace}`;
     }
   }
@@ -124,15 +125,14 @@ class BounceResult extends Result {
       var resultSpace = this.winSpace - (this.nextSpace - this.winSpace);
 
       return {
-        response: response(this.player, this.rolls, resultSpace, this.winSpace),
+        response: response(this.player, this.rolls, resultSpace, this.winSpace, this.currentSpace),
         space: resultSpace
       }
     }
 
     return this.next?.result();
 
-    function response(player, rolls, nextSpace, winSpace) {
-      var currentSpace = player.space == 0 ? "Start" : player.space;
+    function response(player, rolls, nextSpace, winSpace, currentSpace) {
       return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${winSpace}. ${player.name} bounces! ${player.name} returns to ${nextSpace}`;
     }
   }
