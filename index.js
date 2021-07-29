@@ -17,15 +17,15 @@ class Result {
   get nextSpace() {
     return this.player.space + this.rolls[0] + this.rolls[1];
   }
-  get defaultResponse() {
-    return `${this.player.name} rolls ${this.rolls[0]}, ${this.rolls[1]}. Foo moves from ${this.currentSpace} to ${this.nextSpace}`;
+  defaultResponse(nextSpace = this.nextSpace) {
+    return `${this.player.name} rolls ${this.rolls[0]}, ${this.rolls[1]}. Foo moves from ${this.currentSpace} to ${nextSpace}`;
   }
 }
 
 class DefaultResult extends Result {
   result() {
     return {
-      response: this.defaultResponse,
+      response: this.defaultResponse(),
       space: this.nextSpace
     }
   }
@@ -40,7 +40,7 @@ class WinResult extends Result {
   result() {
     if (this.nextSpace == this.winSpace) {
       return {
-        response: `${this.defaultResponse}. ${this.player.name} Wins!!`,
+        response: `${this.defaultResponse()}. ${this.player.name} Wins!!`,
         space: this.nextSpace
       }
     }
@@ -58,7 +58,7 @@ class GooseResult extends Result {
   result() {
     if (this.gooseSpaces.includes(this.nextSpace)) {
       var resultSpace = this.nextSpace;
-      var response = `${this.defaultResponse}, The Goose.`;
+      var response = `${this.defaultResponse()}, The Goose.`;
 
       while (this.gooseSpaces.includes(resultSpace)) {
         resultSpace += this.rolls[0] + this.rolls[1];
@@ -89,16 +89,12 @@ class BridgeResult extends Result {
       var resultSpace = 12;
 
       return {
-        response: response(this.player, this.rolls, resultSpace, this.currentSpace),
+        response: `${this.defaultResponse("The Bridge")}. ${this.player.name} jumps to ${resultSpace}`,
         space: resultSpace
       }
     }
 
     return this.next?.result();
-
-    function response(player, rolls, nextSpace, currentSpace) {
-      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to The Bridge. ${player.name} jumps to ${nextSpace}`;
-    }
   }
 }
 
@@ -113,16 +109,12 @@ class BounceResult extends Result {
       var resultSpace = this.winSpace - (this.nextSpace - this.winSpace);
 
       return {
-        response: response(this.player, this.rolls, resultSpace, this.winSpace, this.currentSpace),
+        response: `${this.defaultResponse(this.winSpace)}. ${this.player.name} bounces! ${this.player.name} returns to ${resultSpace}`,
         space: resultSpace
       }
     }
 
     return this.next?.result();
-
-    function response(player, rolls, nextSpace, winSpace, currentSpace) {
-      return `${player.name} rolls ${rolls[0]}, ${rolls[1]}. Foo moves from ${currentSpace} to ${winSpace}. ${player.name} bounces! ${player.name} returns to ${nextSpace}`;
-    }
   }
 }
 
