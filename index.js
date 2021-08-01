@@ -62,10 +62,10 @@ class GooseResult extends Result {
 
       while (this.gooseSpaces.includes(resultSpace)) {
         resultSpace += this.rolls[0] + this.rolls[1];
+        response += ` ${this.player.name} moves again and goes to ${resultSpace}`;
+
         if (this.gooseSpaces.includes(resultSpace)) {
-          response += ` ${this.player.name} moves again and goes to ${resultSpace}, The Goose.`;
-        } else {
-          response += ` ${this.player.name} moves again and goes to ${resultSpace}`;
+          response += ", The Goose.";
         }
       }
 
