@@ -57,21 +57,21 @@ class GooseResult extends Result {
   }
   result() {
     if (this.gooseSpaces.includes(this.nextSpace)) {
-      var resultSpace = this.nextSpace;
+      var space = this.nextSpace;
       var response = `${this.defaultResponse()}, The Goose.`;
 
-      while (this.gooseSpaces.includes(resultSpace)) {
-        resultSpace += this.rolls[0] + this.rolls[1];
-        response += ` ${this.player.name} moves again and goes to ${resultSpace}`;
+      while (this.gooseSpaces.includes(space)) {
+        space += this.rolls[0] + this.rolls[1];
+        response += ` ${this.player.name} moves again and goes to ${space}`;
 
-        if (this.gooseSpaces.includes(resultSpace)) {
+        if (this.gooseSpaces.includes(space)) {
           response += ", The Goose.";
         }
       }
 
       return {
         response,
-        space: resultSpace
+        space
       }
     }
 
@@ -86,11 +86,11 @@ class BridgeResult extends Result {
   }
   result() {
     if (this.nextSpace == 6) {
-      var resultSpace = 12;
+      var space = 12;
 
       return {
-        response: `${this.defaultResponse("The Bridge")}. ${this.player.name} jumps to ${resultSpace}`,
-        space: resultSpace
+        response: `${this.defaultResponse("The Bridge")}. ${this.player.name} jumps to ${space}`,
+        space
       }
     }
 
@@ -106,11 +106,11 @@ class BounceResult extends Result {
   }
   result() {
     if (this.nextSpace > this.winSpace) {
-      var resultSpace = this.winSpace - (this.nextSpace - this.winSpace);
+      var space = this.winSpace - (this.nextSpace - this.winSpace);
 
       return {
-        response: `${this.defaultResponse(this.winSpace)}. ${this.player.name} bounces! ${this.player.name} returns to ${resultSpace}`,
-        space: resultSpace
+        response: `${this.defaultResponse(this.winSpace)}. ${this.player.name} bounces! ${this.player.name} returns to ${space}`,
+        space
       }
     }
 
