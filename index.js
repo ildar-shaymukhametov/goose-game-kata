@@ -38,14 +38,14 @@ class WinResult extends Result {
     this.winSpace = winSpace;
   }
   result() {
-    if (this.nextSpace == this.winSpace) {
-      return {
-        response: `${this.defaultResponse()}. ${this.player.name} Wins!!`,
-        space: this.nextSpace
-      }
+    if (this.nextSpace != this.winSpace) {
+      return this.next?.result();
     }
 
-    return this.next?.result();
+    return {
+      response: `${this.defaultResponse()}. ${this.player.name} Wins!!`,
+      space: this.nextSpace
+    }
   }
 }
 
@@ -56,26 +56,26 @@ class GooseResult extends Result {
     this.next = next;
   }
   result() {
-    if (this.gooseSpaces.includes(this.nextSpace)) {
-      var space = this.nextSpace;
-      var response = `${this.defaultResponse()}, The Goose.`;
+    if (!this.gooseSpaces.includes(this.nextSpace)) {
+      return this.next?.result();
+    }
 
-      while (this.gooseSpaces.includes(space)) {
-        space += this.rolls[0] + this.rolls[1];
-        response += ` ${this.player.name} moves again and goes to ${space}`;
+    var space = this.nextSpace;
+    var response = `${this.defaultResponse()}, The Goose.`;
 
-        if (this.gooseSpaces.includes(space)) {
-          response += ", The Goose.";
-        }
-      }
+    while (this.gooseSpaces.includes(space)) {
+      space += this.rolls[0] + this.rolls[1];
+      response += ` ${this.player.name} moves again and goes to ${space}`;
 
-      return {
-        response,
-        space
+      if (this.gooseSpaces.includes(space)) {
+        response += ", The Goose.";
       }
     }
 
-    return this.next?.result();
+    return {
+      response,
+      space
+    }
   }
 }
 
@@ -85,16 +85,16 @@ class BridgeResult extends Result {
     this.next = next;
   }
   result() {
-    if (this.nextSpace == 6) {
-      var space = 12;
-
-      return {
-        response: `${this.defaultResponse("The Bridge")}. ${this.player.name} jumps to ${space}`,
-        space
-      }
+    if (this.nextSpace != 6) {
+      return this.next?.result();
     }
 
-    return this.next?.result();
+    var space = 12;
+
+    return {
+      response: `${this.defaultResponse("The Bridge")}. ${this.player.name} jumps to ${space}`,
+      space
+    }
   }
 }
 
@@ -105,16 +105,16 @@ class BounceResult extends Result {
     this.winSpace = winSpace;
   }
   result() {
-    if (this.nextSpace > this.winSpace) {
-      var space = this.winSpace - (this.nextSpace - this.winSpace);
-
-      return {
-        response: `${this.defaultResponse(this.winSpace)}. ${this.player.name} bounces! ${this.player.name} returns to ${space}`,
-        space
-      }
+    if (this.nextSpace <= this.winSpace) {
+      return this.next?.result();
     }
 
-    return this.next?.result();
+    var space = this.winSpace - (this.nextSpace - this.winSpace);
+
+    return {
+      response: `${this.defaultResponse(this.winSpace)}. ${this.player.name} bounces! ${this.player.name} returns to ${space}`,
+      space
+    }
   }
 }
 
