@@ -32,16 +32,11 @@ class DefaultResult extends Result {
 }
 
 class WinResult extends Result {
-  constructor(player, rolls, winSpace, next) {
+  constructor(player, rolls, winSpace) {
     super(player, rolls);
-    this.next = next;
     this.winSpace = winSpace;
   }
   result() {
-    if (this.nextSpace != this.winSpace) {
-      return this.next?.result();
-    }
-
     return {
       response: `${this.defaultResponse()}. ${this.player.name} Wins!!`,
       space: this.nextSpace
@@ -50,16 +45,11 @@ class WinResult extends Result {
 }
 
 class GooseResult extends Result {
-  constructor(player, rolls, gooseSpaces, next) {
+  constructor(player, rolls, gooseSpaces) {
     super(player, rolls);
     this.gooseSpaces = gooseSpaces;
-    this.next = next;
   }
   result() {
-    if (!this.gooseSpaces.includes(this.nextSpace)) {
-      return this.next?.result();
-    }
-
     var space = this.nextSpace;
     var response = `${this.defaultResponse()}, The Goose.`;
 
@@ -80,15 +70,10 @@ class GooseResult extends Result {
 }
 
 class BridgeResult extends Result {
-  constructor(player, rolls, next) {
+  constructor(player, rolls) {
     super(player, rolls);
-    this.next = next;
   }
   result() {
-    if (this.nextSpace != 6) {
-      return this.next?.result();
-    }
-
     var space = 12;
 
     return {
@@ -99,16 +84,11 @@ class BridgeResult extends Result {
 }
 
 class BounceResult extends Result {
-  constructor(player, rolls, winSpace, next) {
+  constructor(player, rolls, winSpace) {
     super(player, rolls);
-    this.next = next;
     this.winSpace = winSpace;
   }
   result() {
-    if (this.nextSpace <= this.winSpace) {
-      return this.next?.result();
-    }
-
     var space = this.winSpace - (this.nextSpace - this.winSpace);
 
     return {
@@ -158,12 +138,8 @@ class MovePlayerHandler {
     var playerName = this.arg.split(" ")[1];
     var player = this.game.players.find(x => x.name == playerName);
     var rolls = getRolls(this.arg, this.game.diceThrower);
-    var result =
-      new BounceResult(player, rolls, this.game.winSpace,
-        new BridgeResult(player, rolls,
-          new GooseResult(player, rolls, this.game.gooseSpaces,
-            new WinResult(player, rolls, this.game.winSpace,
-              new DefaultResult(player, rolls))))).result();
+    var nextSpace = player.space + rolls[0] + rolls[1];
+    var result = getHandler(nextSpace, player, rolls, this.game).result();
 
     player.space = result.space;
     return result.response;
@@ -174,6 +150,20 @@ class MovePlayerHandler {
       var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
 
       return [roll1, roll2];
+    }
+
+    function getHandler(nextSpace, player, rolls, game) {
+      if (nextSpace > game.winSpace) {
+        return new BounceResult(player, rolls, game.winSpace)
+      } else if (nextSpace == 6) {
+        return new BridgeResult(player, rolls);
+      } else if (game.gooseSpaces.includes(nextSpace)) {
+        return new GooseResult(player, rolls, game.gooseSpaces);
+      } else if (nextSpace == game.winSpace) {
+        return new WinResult(player, rolls, game.winSpace);
+      } else {
+        return new DefaultResult(player, rolls);
+      }
     }
   }
 }
