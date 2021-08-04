@@ -129,8 +129,7 @@ class MovePlayerHandler {
       return this.next?.handle();
     }
 
-    var playerName = this.arg.split(" ")[1];
-    var player = this.game.players.find(x => x.name == playerName);
+    var player = this.game.players.find(x => x.name == getPlayerName(this.arg));
     var rolls = getRolls(this.arg, this.game.diceThrower);
     var nextSpace = player.space + rolls[0] + rolls[1];
     var result = getHandler(nextSpace, this.game).result(player, rolls);
@@ -144,6 +143,10 @@ class MovePlayerHandler {
       var roll2 = args.length == 2 ? diceThrower.throw() : Number(args[3]);
 
       return [roll1, roll2];
+    }
+    
+    function getPlayerName(arg) {
+      return arg.split(" ")[1];
     }
 
     function getHandler(nextSpace, game) {
