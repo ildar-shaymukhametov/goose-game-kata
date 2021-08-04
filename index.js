@@ -28,10 +28,6 @@ class DefaultResult extends Result {
 }
 
 class WinResult extends Result {
-  constructor(winSpace) {
-    super();
-    this.winSpace = winSpace;
-  }
   result(player, rolls) {
     var space = this.nextSpace(player, rolls);
     return {
@@ -42,19 +38,19 @@ class WinResult extends Result {
 }
 
 class GooseResult extends Result {
-  constructor(gooseSpaces) {
+  constructor(game) {
     super();
-    this.gooseSpaces = gooseSpaces;
+    this.game = game;
   }
   result(player, rolls) {
     var space = this.nextSpace(player, rolls);
     var response = `${this.baseResult(player, rolls, space)}, The Goose.`;
 
-    while (this.gooseSpaces.includes(space)) {
+    while (this.game.gooseSpaces.includes(space)) {
       space += rolls[0] + rolls[1];
       response += ` ${player.name} moves again and goes to ${space}`;
 
-      if (this.gooseSpaces.includes(space)) {
+      if (this.game.gooseSpaces.includes(space)) {
         response += ", The Goose.";
       }
     }
@@ -78,15 +74,15 @@ class BridgeResult extends Result {
 }
 
 class BounceResult extends Result {
-  constructor(winSpace) {
+  constructor(game) {
     super();
-    this.winSpace = winSpace;
+    this.game = game;
   }
   result(player, rolls) {
-    var space = this.winSpace - (this.nextSpace(player, rolls) - this.winSpace);
+    var space = this.game.winSpace - (this.nextSpace(player, rolls) - this.game.winSpace);
 
     return {
-      response: `${this.baseResult(player, rolls, this.winSpace)}. ${player.name} bounces! ${player.name} returns to ${space}`,
+      response: `${this.baseResult(player, rolls, this.game.winSpace)}. ${player.name} bounces! ${player.name} returns to ${space}`,
       space
     }
   }
@@ -151,13 +147,13 @@ class MovePlayerHandler {
 
     function getHandler(nextSpace, game) {
       if (nextSpace > game.winSpace) {
-        return new BounceResult(game.winSpace)
+        return new BounceResult(game)
       } else if (nextSpace == 6) {
         return new BridgeResult();
       } else if (game.gooseSpaces.includes(nextSpace)) {
-        return new GooseResult(game.gooseSpaces);
+        return new GooseResult(game);
       } else if (nextSpace == game.winSpace) {
-        return new WinResult(game.winSpace);
+        return new WinResult();
       } else {
         return new DefaultResult();
       }
